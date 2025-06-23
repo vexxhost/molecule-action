@@ -1,0 +1,33 @@
+name: Run Molecule Tests
+description: Run Molecule tests
+
+inputs:
+  scenario:
+    description: Molecule scenario to run
+    required: true
+  preserve-env:
+    description: Environment variables to preserve when running Molecule
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openssh-server
+
+    - uses: astral-sh/setup-uv@v6
+
+    - shell: bash
+      run: |
+        uv sync --dev
+        echo ${{ github.workspace }}/.venv/bin >> $GITHUB_PATH
+      env:
+        UV_PYTHON_DOWNLOADS: never
+        UV_PYTHON_PREFERENCE: only-system
+
+    - shell: bash
+      run: sudo --preserve-env=ANSIBLE_PYTHON_INTERPRETER,${{ inputs.preserve-env }} env "PATH=$PATH" molecule test -s ${{ inputs.scenario }}
+      env:
+        ANSIBLE_PYTHON_INTERPRETER: /usr/bin/python3

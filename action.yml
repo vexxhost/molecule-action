@@ -17,7 +17,7 @@ runs:
         sudo apt-get update
         sudo apt-get install -y openssh-server
 
-    - uses: step-security/setup-uv@74a4e3db95d70115a82e33151924944cfac643cb # v10.2.0
+    - uses: step-security/setup-uv@7e018fee7f2f085a7d0e76b2ae75727698cd887e # v10.3.0
 
     - shell: bash
       run: |
